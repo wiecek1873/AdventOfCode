@@ -1,15 +1,10 @@
 ﻿namespace AdventOfCode2024.Solvers;
 
-public class Day01Solver
+public class Day01 : Solver
 {
-    public static StreamReader GetInputStream()
+    public override async Task SolveAsync()
     {
-        return new StreamReader("Inputs/01.txt");
-    }
-
-    public async Task SolveAsync()
-    {
-        var inputStream = GetInputStream();
+        var inputStream = GetInputStream("01");
 
         var line = await inputStream.ReadLineAsync();
 
@@ -60,8 +55,8 @@ public class Day01Solver
                 similarityScore += leftId * rightId;
         }
 
-        Console.WriteLine($"Day 1, Part 1 answer is: {sum}");
-        Console.WriteLine($"Day 1, Part 2 answer is: {similarityScore}");
+        PrintResult(1, 1, sum);
+        PrintResult(1, 2, (int)similarityScore);
     }
 
 }
