@@ -5,7 +5,7 @@ public class Day03 : Solver
 {
     public async override Task SolveAsync()
     {
-        var inputStream = GetInputStream("03");
+        using var inputStream = GetInputStream("03");
 
         var input = await inputStream.ReadToEndAsync();
 
@@ -19,6 +19,38 @@ public class Day03 : Solver
         }
 
         PrintResult(3, 1, sum);
+
+        var allInstructions = GetInstructions(input);
+
+        var conditionalSum = 0;
+        var instrcutionsEnabled = true;
+        foreach (var instruction in allInstructions)
+        {
+            switch (instruction)
+            {
+                case "do()":
+                    instrcutionsEnabled = true;
+                    break;
+                case "don't()":
+                    instrcutionsEnabled = false;
+                    break;
+                default:
+                    if (instrcutionsEnabled)
+                        conditionalSum += GetMulResult(instruction);
+                    break;
+            }
+        }
+
+        PrintResult(3, 2, conditionalSum);
+    }
+
+    public string[] GetInstructions(string input)
+    {
+        string pattern = "(mul\\()\\d+,\\d+\\)|(do\\(\\))|(don\\'t\\(\\))";
+
+        var matches = Regex.Matches(input, pattern);
+
+        return matches.Select(m => m.Value).ToArray();
     }
 
     public string[] GetValidMulInstructions(string input)

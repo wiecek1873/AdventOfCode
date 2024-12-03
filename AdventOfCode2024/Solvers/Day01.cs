@@ -4,7 +4,7 @@ public class Day01 : Solver
 {
     public override async Task SolveAsync()
     {
-        var inputStream = GetInputStream("01");
+        using var inputStream = GetInputStream("01");
 
         var line = await inputStream.ReadLineAsync();
 
@@ -23,8 +23,6 @@ public class Day01 : Solver
 
             line = await inputStream.ReadLineAsync();
         }
-
-        inputStream.Dispose();
 
         leftList.Sort();
         rightList.Sort();

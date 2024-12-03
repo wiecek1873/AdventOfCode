@@ -6,7 +6,7 @@ public class Day02 : Solver
 
     public override async Task SolveAsync()
     {
-        var inputStream = GetInputStream("02");
+        using var inputStream = GetInputStream("02");
 
         var safeReportsCounter = 0;
         while (!inputStream.EndOfStream)
