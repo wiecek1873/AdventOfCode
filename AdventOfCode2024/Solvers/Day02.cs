@@ -9,6 +9,7 @@ public class Day02 : Solver
         using var inputStream = GetInputStream("02");
 
         var safeReportsCounter = 0;
+        var safeReportsDampenedCounter = 0;
         while (!inputStream.EndOfStream)
         {
             var report = await inputStream.ReadLineAsync();
@@ -16,26 +17,43 @@ public class Day02 : Solver
             if (report == null)
                 continue;
 
-            if (IsReportSafe(report))
+            var levels = ParseToIntArray(report);
+
+            if (IsReportSafe(levels))
                 safeReportsCounter++;
+
+            for (int i = 0; i < levels.Length; i++)
+            {
+                var slicedLevels = levels.ToList();
+                slicedLevels.RemoveAt(i);
+
+                if (IsReportSafe(slicedLevels.ToArray()))
+                {
+                    safeReportsDampenedCounter++;
+                    break;
+                }
+            }
         }
 
         PrintResult(2, 1, safeReportsCounter);
+        PrintResult(2, 2, safeReportsDampenedCounter);
     }
 
-    public bool IsReportSafe(string report)
+    public bool IsReportSafe(int[] levels)
     {
-        var levelsAsString = report.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-
-        var levels = Array.ConvertAll(levelsAsString, int.Parse);
-
         var isIncreasing = levels[0] < levels[1];
 
         if (!AreAllDecreasing(levels) && !AreAllIncreasing(levels))
             return false;
 
         return AreDifferencesSafe(levels, MinLevelDiffer, MaxLevelDiffer);
+    }
 
+    private static int[] ParseToIntArray(string report)
+    {
+        var levelsAsString = report.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+
+        return Array.ConvertAll(levelsAsString, int.Parse);
     }
 
     public bool AreAllIncreasing(int[] levels)

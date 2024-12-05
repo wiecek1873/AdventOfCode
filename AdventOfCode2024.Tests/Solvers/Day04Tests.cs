@@ -160,7 +160,7 @@ public class Day04Tests
         var expectedCount = 1;
 
         //Act
-        var count = _day04.GetDiagonalXmasCount(2, 4, input);
+        var count = _day04.GetDiagonalXmasCount(2, 3, input);
 
         //Assert
         count.Should().Be(expectedCount);
@@ -180,7 +180,7 @@ public class Day04Tests
         var expectedCount = 1;
 
         //Act
-        var count = _day04.GetDiagonalXmasCount(4, 2, input);
+        var count = _day04.GetDiagonalXmasCount(3, 2, input);
 
         //Assert
         count.Should().Be(expectedCount);
@@ -201,7 +201,49 @@ public class Day04Tests
         var expectedCount = 1;
 
         //Act
-        var count = _day04.GetDiagonalXmasCount(4, 3, input);
+        var count = _day04.GetDiagonalXmasCount(3, 3, input);
+
+        //Assert
+        count.Should().Be(expectedCount);
+    }
+
+    [Fact]
+    public void IsXShapedMas_ShouldReturnTrue_WhenContainsXShapedMas()
+    {
+        //Arragne
+        var input = new char[10][];
+        input[0] = ['M', '.', 'S'];
+        input[1] = ['.', 'A', '.'];
+        input[2] = ['M', '.', 'S'];
+
+
+        //Act
+        var result = _day04.IsXShapedMas(1, 1, input);
+
+        //Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void CountXShapedMas_ShouldReturnValidWordCount()
+    {
+        //Arrange
+        var input = new char[10][];
+        input[0] = ['.', 'M', '.', 'S', '.', '.', '.', '.', '.', '.'];
+        input[1] = ['.', '.', 'A', '.', '.', 'M', 'S', 'M', 'S', '.'];
+        input[2] = ['.', 'M', '.', 'S', '.', 'M', 'A', 'A', '.', '.'];
+        input[3] = ['.', '.', 'A', '.', 'A', 'S', 'M', 'S', 'M', '.'];
+        input[4] = ['.', 'M', '.', 'S', '.', 'M', '.', '.', '.', '.'];
+        input[5] = ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.'];
+        input[6] = ['S', '.', 'S', '.', 'S', '.', 'S', '.', 'S', '.'];
+        input[7] = ['.', 'A', '.', 'A', '.', 'A', '.', 'A', '.', '.'];
+        input[8] = ['M', '.', 'M', '.', 'M', '.', 'M', '.', 'M', '.'];
+        input[9] = ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.'];
+
+        var expectedCount = 9;
+
+        //Act
+        var count = _day04.CountXShapedMas(input);
 
         //Assert
         count.Should().Be(expectedCount);

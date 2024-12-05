@@ -9,3 +9,8 @@ await day02Solver.SolveAsync();
 var day03Solver = new Day03();
 await day03Solver.SolveAsync();
 
+var day04Solver = new Day04();
+await day04Solver.SolveAsync();
+
+var day5 = new Day05();
+await day5.SolveAsync();
