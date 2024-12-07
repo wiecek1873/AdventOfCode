@@ -6,6 +6,18 @@ public class Day06Tests
 {
     private readonly Day06 day06 = new Day06();
 
+    private char[][] GetEmptyMap()
+    {
+        var map = new char[5][];
+        map[0] = ['.', '.', '.', '.', '.'];
+        map[1] = ['.', '.', '.', '.', '.'];
+        map[2] = ['.', '.', '.', '.', '.'];
+        map[3] = ['.', '.', '.', '.', '.'];
+        map[4] = ['.', '.', '.', '.', '.'];
+
+        return map;
+    }
+
     private char[][] GetTestMap()
     {
         var map = new char[5][];
@@ -133,5 +145,77 @@ public class Day06Tests
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
+    }
+
+    [Theory]
+    [InlineData(1, 1, 2, 2)]
+    [InlineData(0, 0, 4, 4)]
+    [InlineData(4, 4, 0, 0)]
+    public void MarkPathWithX_ShouldThrowIvalidOperationException_WhenPathIsDiagonal(int fromI, int fromJ, int toI, int toJ)
+    {
+        //Arrange
+        var map = GetEmptyMap();
+
+        //Act
+        Action act = () => Day06.MarkPathWithX(map, fromI, fromJ, toI, toJ);
+
+        //Assert
+        act.Should().Throw<InvalidOperationException>();
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldMarkPathWithX()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 1;
+        var fromJ = 1;
+        var toJ = 4;
+
+        //Act
+        Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+
+        //Assert
+        for (int j = fromJ; j < toJ; j++)
+        {
+            map[i][j].Should().Be('X');
+        }
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldReturnMarkedPositionsCount()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 1;
+        var fromJ = 1;
+        var toJ = 4;
+
+        //Act
+        var result = Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+
+        //Assert
+        result.Should().Be(Math.Abs(toJ - fromJ));
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldNotMarkPath_WhenPathAlreadyMarked()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 1;
+        var fromJ = 1;
+        var toJ = 3;
+
+        for (int j = fromJ; j < toJ; j++)
+        {
+            map[i][j] = 'X';
+        }
+
+        //Act
+        var result = Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+
+        //Assert
+        result.Should().Be(0);
     }
 }

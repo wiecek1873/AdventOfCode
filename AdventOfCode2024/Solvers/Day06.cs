@@ -34,9 +34,17 @@ public class Day06 : Solver
         throw new InvalidOperationException("Map does not contain guard");
     }
 
-    public static void MoveGuard(char[][] map, ref int guardI, out int guardJ)
+    public static void MoveGuard(char[][] map, ref int guardI, ref int guardJ)
     {
         throw new NotImplementedException();
+    }
+
+    public static int MarkPathWithX(char[][] map, int fromI, int fromJ, int toI, int toJ)
+    {
+        var currentI = 0;
+        var currentJ = 0;
+
+
     }
 
     public static char[][] FillWithGuardPath(char[][] map)
@@ -45,7 +53,9 @@ public class Day06 : Solver
 
         while (guardI != -1 && guardJ != -1)
         {
-            MoveGuard(map, ref guardI, out guardJ);
+            MoveGuard(map, ref guardI, ref guardJ);
         }
+
+        throw new NotImplementedException();
     }
 }
