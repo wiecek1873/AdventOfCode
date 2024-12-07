@@ -1,4 +1,5 @@
-﻿using AdventOfCode2024.Solvers;
+﻿using AdventOfCode2024.Commons;
+using AdventOfCode2024.Solvers;
 using FluentAssertions;
 
 namespace AdventOfCode2024.Tests.Solvers;
@@ -30,34 +31,30 @@ public class Day06Tests
         return map;
     }
 
-    private int GuardI = 3;
-    private int GuardJ = 2;
+    private Vector2Int GuardPosition = new Vector2Int(2, 3);
 
     [Fact]
-    public void FindGuardPosition_ShouldReturnGuardPosition_IfGuardExist()
+    public void FindGuardStartingPosition_ShouldReturnGuardPosition_IfGuardExist()
     {
         //Arrange
         var map = GetTestMap();
-        var expectedGuardI = GuardI;
-        var expectedGuardJ = GuardJ;
 
         //Act
-        Day06.FindGuardPosition(map, out var guardI, out var guardJ);
+        var result = Day06.FindGuardStartingPosition(map);
 
         //Assert
-        guardI.Should().Be(expectedGuardI);
-        guardJ.Should().Be(expectedGuardJ);
+        result.Should().Be(GuardPosition);
     }
 
     [Fact]
-    public void FindGuardPosition_ShouldThrowInvalidOperationException_WhenGuardDontExist()
+    public void FindGuardStartingPosition_ShouldThrowInvalidOperationException_WhenGuardDontExist()
     {
         //Arrange
         var map = GetTestMap();
-        map[GuardI][GuardJ] = '.';
+        map[GuardPosition.Y][GuardPosition.X] = '.';
 
         //Act
-        Action act = () => Day06.FindGuardPosition(map, out var guardI, out var guardJ);
+        Action act = () => Day06.FindGuardStartingPosition(map);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -69,16 +66,15 @@ public class Day06Tests
     {
         //Arrange
         var map = GetTestMap();
-        var guardI = GuardI;
-        var guardJ = GuardJ;
 
         //Act
-        Day06.MoveGuard(map, ref guardI, ref guardJ);
+        var guardPosition = Day06.MoveGuard(map, GuardPosition);
 
         //Assert
-        guardI.Should().Be(1);
-        guardJ.Should().Be(2);
-        map[GuardI][GuardJ].Should().Be('>');
+        guardPosition.Should().NotBeNull();
+        guardPosition.X.Should().Be(2);
+        guardPosition.Y.Should().Be(1);
+        map[GuardPosition.Y][GuardPosition.X].Should().Be('>');
     }
 
     [Fact]
@@ -86,14 +82,12 @@ public class Day06Tests
     {
         //Arrange
         var map = GetTestMap();
-        var guardI = GuardI;
-        var guardJ = GuardJ;
 
         //Act
-        Day06.MoveGuard(map, ref guardI, ref guardJ);
+        var guardPosition = Day06.MoveGuard(map, GuardPosition);
 
         //Assert
-        map[GuardI][GuardJ].Should().Be('.');
+        map[guardPosition.Y][guardPosition.X].Should().Be('.');
     }
 
     [Fact]
@@ -102,14 +96,12 @@ public class Day06Tests
         //Arrange
         var map = GetTestMap();
         map[0][2] = '.';
-        var guardI = GuardI;
-        var guardJ = GuardJ;
 
         //Act
-        Day06.MoveGuard(map, ref guardI, ref guardJ);
+        Day06.MoveGuard(map, GuardPosition);
 
         //Assert
-        map[GuardI][GuardJ].Should().Be('.');
+        map[GuardPosition.Y][GuardPosition.X].Should().Be('.');
     }
 
 
@@ -119,16 +111,17 @@ public class Day06Tests
         //Arrange
         var map = GetTestMap();
         map[0][2] = '.';
-        var guardI = GuardI;
-        var guardJ = GuardJ;
 
         //Act
-        Day06.MoveGuard(map, ref guardI, ref guardJ);
+        Day06.MoveGuard(map, GuardPosition);
 
         //Assert
         foreach (var row in map)
         {
+            row.Should().NotContain('^');
             row.Should().NotContain('>');
+            row.Should().NotContain('v');
+            row.Should().NotContain('<');
         }
     }
 
@@ -137,11 +130,9 @@ public class Day06Tests
     {
         //Arrange
         var map = GetTestMap();
-        var guardI = GuardI;
-        var guardJ = GuardJ;
 
         //Act
-        Action act = () => Day06.MoveGuard(map, ref guardI, ref guardJ);
+        Action act = () => Day06.MoveGuard(map, GuardPosition);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -151,13 +142,13 @@ public class Day06Tests
     [InlineData(1, 1, 2, 2)]
     [InlineData(0, 0, 4, 4)]
     [InlineData(4, 4, 0, 0)]
-    public void MarkPathWithX_ShouldThrowIvalidOperationException_WhenPathIsDiagonal(int fromI, int fromJ, int toI, int toJ)
+    public void MarkPathWithX_ShouldThrowIvalidOperationException_WhenPathIsDiagonal(int fromY, int fromX, int toY, int toX)
     {
         //Arrange
         var map = GetEmptyMap();
 
         //Act
-        Action act = () => Day06.MarkPathWithX(map, fromI, fromJ, toI, toJ);
+        Action act = () => Day06.MarkPathWithX(map, new Vector2Int(fromX, fromY), new Vector2Int(toX, toY));
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -168,100 +159,70 @@ public class Day06Tests
     {
         //Arrange
         var map = GetEmptyMap();
-        var i = 1;
-        var fromJ = 1;
-        var toJ = 4;
+        var y = 1;
+        var fromX = 1;
+        var toX = 4;
 
         //Act
-        Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+        Day06.MarkPathWithX(map, new Vector2Int(fromX, y), new Vector2Int(toX, y));
 
         //Assert
-        for (int j = fromJ; j < toJ; j++)
+        for (int x = fromX; x < toX; x++)
         {
-            map[i][j].Should().Be('X');
+            map[y][x].Should().Be('X');
         }
     }
 
     [Fact]
-    public void MarkPathWithX_ShouldReturnMarkedPositionsCount()
+    public void TryMarkWithX_ShouldSetToX()
     {
         //Arrange
         var map = GetEmptyMap();
-        var i = 1;
-        var fromJ = 1;
-        var toJ = 4;
+        var position = new Vector2Int(0, 0);
 
         //Act
-        var result = Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+        Day06.MarkWithX(map, position);
 
         //Assert
-        result.Should().Be(Math.Abs(toJ - fromJ));
+        map[position.Y][position.X].Should().Be('X');
     }
 
     [Fact]
-    public void MarkPathWithX_ShouldNotMarkPath_WhenPathAlreadyMarked()
+    public void FindNextAvailablePosition_ShouldReturnNull_WhenNoObstacleOnPath()
     {
         //Arrange
-        var map = GetEmptyMap();
-        var i = 1;
-        var fromJ = 1;
-        var toJ = 3;
-
-        for (int j = fromJ; j < toJ; j++)
-        {
-            map[i][j] = 'X';
-        }
+        var map = GetTestMap();
+        map[0][2] = '.';
 
         //Act
-        var result = Day06.MarkPathWithX(map, i, fromJ, i, toJ);
+        var result = Day06.FindNextAvailablePosition(map, GuardPosition);
 
         //Assert
-        result.Should().Be(0);
+        result.Should().BeNull();
     }
 
     [Fact]
-    public void TryMarkWithX_ShouldReturnTrue_WhenPositionIsNotX()
+    public void FindNextAvailablePosition_ShouldReturnAvailablePosition_WhenObstacleOnPath()
     {
         //Arrange
-        var map = GetEmptyMap();
-        var i = 0;
-        var j = 0;
+        var map = GetTestMap();
+        var expectedPosition = new Vector2Int(2, 1);
 
         //Act
-        var result = Day06.TryMarkWithX(map, i, j);
+        var result = Day06.FindNextAvailablePosition(map, GuardPosition);
 
         //Assert
-        result.Should().BeTrue();
+        result.Should().NotBeNull();
+        result.Should().Be(expectedPosition);
     }
 
-    [Fact]
-    public void TryMarkWithX_ShouldReturnFalse_WhenPositionIsX()
-    {
-        //Arrange
-        var map = GetEmptyMap();
-        var i = 0;
-        var j = 0;
-        map[i][j] = 'X';
+    //[Theory]
+    //[InlineData('^', new Vector2(-1, 0))]
+    //[InlineData('>', new Vector2(0, 1))]
+    //[InlineData('v', new Vector2(1, 0))]
+    //[InlineData('<', new Vector2(0, -1))]
+    //public void GetDirection_ShouldReturnValidVector2_BasedOnGuardDirection(char guard, Vector2 expectedDirection)
+    //{
 
-        //Act
-        var result = Day06.TryMarkWithX(map, i, j);
-
-        //Assert
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public void TryMarkWithX_ShouldSetToX_WhenPositionIsNotX()
-    {
-        //Arrange
-        var map = GetEmptyMap();
-        var i = 0;
-        var j = 0;
-
-        //Act
-        var result = Day06.TryMarkWithX(map, i, j);
-
-        //Assert
-        map[i][j].Should().Be('X');
-    }
+    //}
 }

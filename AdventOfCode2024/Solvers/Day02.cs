@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2024.Solvers;
+﻿using AdventOfCode2024.Commons;
+
+namespace AdventOfCode2024.Solvers;
 public class Day02 : Solver
 {
     private const int MinLevelDiffer = 1;

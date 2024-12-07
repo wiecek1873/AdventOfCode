@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using AdventOfCode2024.Commons;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode2024.Solvers;
 public class Day03 : Solver

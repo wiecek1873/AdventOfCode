@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2024.Solvers;
+﻿using AdventOfCode2024.Commons;
+
+namespace AdventOfCode2024.Solvers;
 public class Day05 : Solver
 {
     private static Random rng = new Random();

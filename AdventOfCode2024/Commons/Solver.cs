@@ -1,4 +1,4 @@
-﻿namespace AdventOfCode2024.Solvers;
+﻿namespace AdventOfCode2024.Commons;
 public abstract class Solver
 {
     public abstract Task SolveAsync();
