@@ -72,13 +72,13 @@ public class Day06Tests
 
         //Assert
         guardPosition.Should().NotBeNull();
-        guardPosition.X.Should().Be(2);
-        guardPosition.Y.Should().Be(1);
-        map[GuardPosition.Y][GuardPosition.X].Should().Be('>');
+        guardPosition!.Value.X.Should().Be(2);
+        guardPosition!.Value.Y.Should().Be(1);
+        map[guardPosition.Value.Y][guardPosition.Value.X].Should().Be('>');
     }
 
     [Fact]
-    public void MoveGuard_ShouldRemoveGuardFromStartPosition_IfObstacleExist()
+    public void MoveGuard_ShouldMarkWithXGuardStartPosition_IfObstacleExist()
     {
         //Arrange
         var map = GetTestMap();
@@ -87,11 +87,12 @@ public class Day06Tests
         var guardPosition = Day06.MoveGuard(map, GuardPosition);
 
         //Assert
-        map[guardPosition.Y][guardPosition.X].Should().Be('.');
+        guardPosition.Should().NotBeNull();
+        map[GuardPosition.Y][GuardPosition.X].Should().Be('X');
     }
 
     [Fact]
-    public void MoveGuard_ShouldRemoveGuardFromStartPosition_IfObstacleDontExist()
+    public void MoveGuard_ShouldMarkWithXGuardStartPosition_IfObstacleDontExist()
     {
         //Arrange
         var map = GetTestMap();
@@ -101,7 +102,7 @@ public class Day06Tests
         Day06.MoveGuard(map, GuardPosition);
 
         //Assert
-        map[GuardPosition.Y][GuardPosition.X].Should().Be('.');
+        map[GuardPosition.Y][GuardPosition.X].Should().Be('X');
     }
 
 
@@ -130,9 +131,12 @@ public class Day06Tests
     {
         //Arrange
         var map = GetTestMap();
+        var invalidPosition = GuardPosition;
+        invalidPosition.X += 1;
+        invalidPosition.Y += 1;
 
         //Act
-        Action act = () => Day06.MoveGuard(map, GuardPosition);
+        Action act = () => Day06.MoveGuard(map, invalidPosition);
 
         //Assert
         act.Should().Throw<InvalidOperationException>();
@@ -155,7 +159,7 @@ public class Day06Tests
     }
 
     [Fact]
-    public void MarkPathWithX_ShouldMarkPathWithX()
+    public void MarkPathWithX_ShouldMarkPathWithX_WhenMovingRight()
     {
         //Arrange
         var map = GetEmptyMap();
@@ -167,7 +171,64 @@ public class Day06Tests
         Day06.MarkPathWithX(map, new Vector2Int(fromX, y), new Vector2Int(toX, y));
 
         //Assert
-        for (int x = fromX; x < toX; x++)
+        for (int x = fromX; x <= toX; x++)
+        {
+            map[y][x].Should().Be('X');
+        }
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldMarkPathWithX_WhenMovingLeft()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var y = 1;
+        var fromX = 4;
+        var toX = 1;
+
+        //Act
+        Day06.MarkPathWithX(map, new Vector2Int(fromX, y), new Vector2Int(toX, y));
+
+        //Assert
+        for (int x = fromX; x >= toX; x--)
+        {
+            map[y][x].Should().Be('X');
+        }
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldMarkPathWithX_WhenMovingDown()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var x = 1;
+        var fromY = 1;
+        var toY = 4;
+
+        //Act
+        Day06.MarkPathWithX(map, new Vector2Int(x, fromY), new Vector2Int(x, toY));
+
+        //Assert
+        for (int y = fromY; y <= toY; y++)
+        {
+            map[y][x].Should().Be('X');
+        }
+    }
+
+    [Fact]
+    public void MarkPathWithX_ShouldMarkPathWithX_WhenMovingUp()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var x = 1;
+        var fromY = 4;
+        var toY = 1;
+
+        //Act
+        Day06.MarkPathWithX(map, new Vector2Int(x, fromY), new Vector2Int(x, toY));
+
+        //Assert
+        for (int y = fromY; y >= toY; y--)
         {
             map[y][x].Should().Be('X');
         }
@@ -188,17 +249,33 @@ public class Day06Tests
     }
 
     [Fact]
-    public void FindNextAvailablePosition_ShouldReturnNull_WhenNoObstacleOnPath()
+    public void FindNextAvailablePosition_ShouldReturnOutOfMapAsTrue_WhenNoObstacleOnPath()
     {
         //Arrange
         var map = GetTestMap();
         map[0][2] = '.';
 
         //Act
-        var result = Day06.FindNextAvailablePosition(map, GuardPosition);
+        var result = Day06.FindNextAvailablePosition(map, GuardPosition, out var outOfMap);
 
         //Assert
-        result.Should().BeNull();
+        outOfMap.Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void FindNextAvailablePosition_ShouldReturnLastAvailablePosition_WhenNoObstacleOnPath()
+    {
+        //Arrange
+        var map = GetTestMap();
+        map[0][2] = '.';
+
+        //Act
+        var result = Day06.FindNextAvailablePosition(map, GuardPosition, out var outOfMap);
+
+        //Assert
+        outOfMap.Should().BeTrue();
+        result.Should().BeEquivalentTo(new Vector2Int(2, 0));
     }
 
     [Fact]
@@ -209,20 +286,80 @@ public class Day06Tests
         var expectedPosition = new Vector2Int(2, 1);
 
         //Act
-        var result = Day06.FindNextAvailablePosition(map, GuardPosition);
+        var result = Day06.FindNextAvailablePosition(map, GuardPosition, out var outOfMap);
 
         //Assert
-        result.Should().NotBeNull();
+        outOfMap.Should().BeFalse();
         result.Should().Be(expectedPosition);
     }
 
-    //[Theory]
-    //[InlineData('^', new Vector2(-1, 0))]
-    //[InlineData('>', new Vector2(0, 1))]
-    //[InlineData('v', new Vector2(1, 0))]
-    //[InlineData('<', new Vector2(0, -1))]
-    //public void GetDirection_ShouldReturnValidVector2_BasedOnGuardDirection(char guard, Vector2 expectedDirection)
-    //{
+    [Theory]
+    [InlineData('^', 0, -1)]
+    [InlineData('>', 1, 0)]
+    [InlineData('v', 0, 1)]
+    [InlineData('<', -1, 0)]
+    public void GetDirection_ShouldReturnValidVector2_BasedOnGuardDirection(char guard, int expectedX, int expectedY)
+    {
+        //Act
+        var result = Day06.GetDirection(guard);
 
-    //}
+        //Assert
+        result.Should().Be(new Vector2Int(expectedX, expectedY));
+    }
+
+    [Fact(Skip = "Not implemented")]
+    public void GetDirection_ShouldThrowArgumentException_WhenGuardIsNotKnownGuard()
+    {
+
+    }
+
+    [Theory]
+    [InlineData(0, 1, 'v')]
+    [InlineData(1, 0, '>')]
+    [InlineData(0, -1, '^')]
+    [InlineData(-1, 0, '<')]
+    public void GetDirection_ShouldReturnValidChar_BasedOnDirection(int x, int y, char expectedResult)
+    {
+        //Act
+        var result = Day06.GetDirection(new Vector2Int(x, y));
+
+        //Assert
+        result.Should().Be(expectedResult);
+    }
+
+    [Fact(Skip = "Not implemented")]
+    public void GetDirection_ShouldThrowArgumentException_WhenDirectionIsDiagonal()
+    {
+
+    }
+
+    [Fact(Skip = "Not implemented")]
+    public void GetDirection_ShouldThrowArgumentException_WhenDirectionIsZero()
+    {
+
+    }
+
+    [Theory]
+    [InlineData('v', '<')]
+    [InlineData('>', 'v')]
+    [InlineData('^', '>')]
+    [InlineData('<', '^')]
+    public void RotateGuard_ShouldRotateGuard(char guard, char expectedGuard)
+    {
+        //Act
+        var result = Day06.RotateGuard(guard);
+
+        //Assert
+        result.Should().Be(expectedGuard);
+    }
+
+    [Fact]
+    public void RotateGuard_ShouldThrowArgumentException_WhenGuardIsNotKnownGuard()
+    {
+        //Act
+        Action act = () => Day06.RotateGuard('.');
+
+        //Assert
+        act.Should().Throw<ArgumentException>();
+    }
 }
