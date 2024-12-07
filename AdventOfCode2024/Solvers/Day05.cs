@@ -51,19 +51,11 @@ public class Day05 : Solver
             if (IsPagesUpdateCorrect(pages, printingRules))
                 correctUpdatesMiddlePageSum += pages[pages.Length / 2];
             else
-            {
-                var correctPagesOrder = pages.ToList();
-                do
-                {
-                    Shuffle(correctPagesOrder); //Bogosort ftw
-                }
-                while (!IsPagesUpdateCorrect(correctPagesOrder.ToArray(), printingRules));
-
-                incorrectUpdatesMiddlePageSum = correctPagesOrder[correctPagesOrder.Count / 2];
-            }
+                incorrectUpdatesMiddlePageSum += GetFixedUpdateMiddlePage(pages, printingRules);
         }
 
         PrintResult(5, 1, correctUpdatesMiddlePageSum);
+        PrintResult(5, 2, incorrectUpdatesMiddlePageSum);
     }
 
     public static int[] ParsePrintingRule(string? inputLine)
@@ -103,16 +95,16 @@ public class Day05 : Solver
         return true;
     }
 
-    public void Shuffle<T>(IList<T> list)
+    public static int GetFixedUpdateMiddlePage(int[] pages, Dictionary<int, PrintingRule> printingRules)
     {
-        int n = list.Count;
-        while (n > 1)
+        foreach (var page in pages)
         {
-            n--;
-            int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
+            var rulesForCurrentPage = printingRules[page].PagesBefore.Intersect(pages).Count();
+
+            if (rulesForCurrentPage == pages.Length / 2)
+                return page;
         }
+
+        throw new NotImplementedException();
     }
 }

@@ -88,4 +88,26 @@ public class Day05Tests
         //Assert
         result.Should().BeFalse();
     }
+
+    [Fact]
+    public void GetFixedUpdateMiddlePage_ShouldReturnValidPage()
+    {
+        //Arrange
+        var pages = new int[] { 47, 61, 75 };
+        var printingRules = new Dictionary<int, Day05.PrintingRule>();
+
+        Day05.PrintingRule rule = new Day05.PrintingRule { PrintedPage = 47 };
+        rule.PagesBefore.Add(75);
+        printingRules.Add(47, rule);
+
+        Day05.PrintingRule rule1 = new Day05.PrintingRule { PrintedPage = 61 };
+        rule1.PagesBefore.Add(47);
+        printingRules.Add(61, rule1);
+
+        //Act
+        var result = Day05.GetFixedUpdateMiddlePage(pages, printingRules);
+
+        //Assert
+        result.Should().Be(47);
+    }
 }
