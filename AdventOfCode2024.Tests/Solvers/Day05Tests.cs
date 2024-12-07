@@ -20,11 +20,11 @@ public class Day05Tests
 
     [Theory]
     [InlineData("12,45,63,12", new int[] { 12, 45, 63, 12 })]
-    [InlineData("51", new int[] { 54 })]
+    [InlineData("51", new int[] { 51 })]
     public void ParsePages_ShouldReturnPages(string input, int[] expectedPages)
     {
         //Act
-        var result = Day05.ParsePrintingRule(input);
+        var result = Day05.ParsePages(input);
 
         //Assert
         result.Should().BeEquivalentTo(expectedPages);

@@ -83,7 +83,7 @@ public class Day05 : Solver
             if (!printingRules.ContainsKey(currentPage))
                 continue;
 
-            for (int j = i + 1; j < pages.Length - 1; j++)
+            for (int j = i + 1; j < pages.Length; j++)
             {
                 var pagesBeforeCurrentPage = printingRules[currentPage].PagesBefore;
 
