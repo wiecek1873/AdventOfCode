@@ -218,4 +218,50 @@ public class Day06Tests
         //Assert
         result.Should().Be(0);
     }
+
+    [Fact]
+    public void TryMarkWithX_ShouldReturnTrue_WhenPositionIsNotX()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 0;
+        var j = 0;
+
+        //Act
+        var result = Day06.TryMarkWithX(map, i, j);
+
+        //Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public void TryMarkWithX_ShouldReturnFalse_WhenPositionIsX()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 0;
+        var j = 0;
+        map[i][j] = 'X';
+
+        //Act
+        var result = Day06.TryMarkWithX(map, i, j);
+
+        //Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public void TryMarkWithX_ShouldSetToX_WhenPositionIsNotX()
+    {
+        //Arrange
+        var map = GetEmptyMap();
+        var i = 0;
+        var j = 0;
+
+        //Act
+        var result = Day06.TryMarkWithX(map, i, j);
+
+        //Assert
+        map[i][j].Should().Be('X');
+    }
 }

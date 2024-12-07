@@ -41,10 +41,46 @@ public class Day06 : Solver
 
     public static int MarkPathWithX(char[][] map, int fromI, int fromJ, int toI, int toJ)
     {
-        var currentI = 0;
-        var currentJ = 0;
+        if (fromI != toI && fromJ != toJ)
+            throw new InvalidOperationException($"Can't mark diagonal path. Path start at {fromI},{fromJ} and end at {toI},{toJ}")
+
+        var marksCounter = 0;
+
+        if (fromI < toI)
+        {
+            for (int i = fromI; i < toI; i++)
+            {
+                if (TryMarkWithX())
+                    marksCounter++;
+            }
+        }
+        else
+        {
+
+        }
+
+        if (fromJ < toJ)
+        {
+
+        }
+        else
+        {
+
+        }
 
 
+    }
+
+    public static bool TryMarkWithX(char[][] map, int i, int j)
+    {
+        var currentPosition = map[i][j];
+
+        if (currentPosition == 'X')
+            return false;
+
+        map[i][j] = 'X';
+
+        return true;
     }
 
     public static char[][] FillWithGuardPath(char[][] map)
