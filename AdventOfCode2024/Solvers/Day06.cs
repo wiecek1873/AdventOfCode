@@ -49,11 +49,9 @@ public class Day06 : Solver
         {
             for (int j = 0; j < map[i].Length; j++)
             {
-                Console.Write(map[i][j]);
                 if (map[i][j] == character)
                     counter++;
             }
-            Console.Write("\n");
         }
 
         return counter;

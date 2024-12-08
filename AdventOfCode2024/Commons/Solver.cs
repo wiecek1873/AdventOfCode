@@ -12,4 +12,9 @@ public abstract class Solver
     {
         Console.WriteLine($"Day {day}, Part {part} answer is: {result}");
     }
+
+    protected void PrintResult(int day, int part, long result)
+    {
+        Console.WriteLine($"Day {day}, Part {part} answer is: {result}");
+    }
 }
