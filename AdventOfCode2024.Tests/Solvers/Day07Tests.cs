@@ -8,6 +8,7 @@ public class Day07Tests
     [Theory]
     [InlineData(new long[] { 2, 4 }, '+', 6)]
     [InlineData(new long[] { 2, 4 }, '*', 8)]
+    [InlineData(new long[] { 2, 4 }, '|', 24)]
     public void Evaluate_ShouldReturnValidResult_ForGivenOperator(long[] numbers, char operatorCharacter, long expectedResult)
     {
         //Act
@@ -47,18 +48,18 @@ public class Day07Tests
     [Theory]
     [InlineData(new long[] { }, 0)]
     [InlineData(new long[] { 1 }, 0)]
-    [InlineData(new long[] { 1, 2 }, 2)]
-    [InlineData(new long[] { 1, 2, 3 }, 4)]
-    [InlineData(new long[] { 1, 2, 3, 4 }, 8)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5 }, 16)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6 }, 32)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7 }, 64)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 128)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 256)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 512)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, 1024)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 2048)]
-    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }, 4096)]
+    [InlineData(new long[] { 1, 2 }, 3)]
+    [InlineData(new long[] { 1, 2, 3 }, 9)]
+    [InlineData(new long[] { 1, 2, 3, 4 }, 27)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5 }, 81)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6 }, 243)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7 }, 729)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 2187)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 6561)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 19683)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, 59049)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }, 177147)]
+    [InlineData(new long[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }, 531441)]
     public void GetAllOperatorsPermutations_ShouldReturnValidPermutationsCount(long[] numbers, int count)
     {
         //Act
@@ -72,16 +73,17 @@ public class Day07Tests
     public void GetAllOperatorsPermutations_ShouldReturnAllPermutations()
     {
         //Arrange
-        var numbers = new long[] { 1, 2, 3, 4 };
+        var numbers = new long[] { 1, 2, 3 };
         var expectedResult = new List<char[]>();
-        expectedResult.AddRange(['+', '+', '+']);
-        expectedResult.AddRange(['*', '+', '+']);
-        expectedResult.AddRange(['+', '*', '+']);
-        expectedResult.AddRange(['+', '+', '*']);
-        expectedResult.AddRange(['*', '+', '*']);
-        expectedResult.AddRange(['+', '*', '*']);
-        expectedResult.AddRange(['*', '*', '*']);
-        expectedResult.AddRange(['+', '*', '*']);
+        expectedResult.AddRange(['+', '+']);
+        expectedResult.AddRange(['*', '+']);
+        expectedResult.AddRange(['|', '+']);
+        expectedResult.AddRange(['+', '*']);
+        expectedResult.AddRange(['+', '|']);
+        expectedResult.AddRange(['*', '*']);
+        expectedResult.AddRange(['*', '|']);
+        expectedResult.AddRange(['|', '*']);
+        expectedResult.AddRange(['|', '|']);
 
         //Act
         var result = Day07.GetAllOperatorsPermutations(numbers);
@@ -119,8 +121,8 @@ public class Day07Tests
 
     [Theory]
     [InlineData(new long[] { 17, 5 }, 83)]
-    [InlineData(new long[] { 15, 6 }, 156)]
-    [InlineData(new long[] { 16, 10, 13 }, 161011)]
+    [InlineData(new long[] { 15, 6 }, 155)]
+    [InlineData(new long[] { 16, 10, 13 }, 16101)]
     public void IsEquationPossible_ShouldReturnFalse_WhenEquationIsNotPossible(long[] numbers, long equationExpectedResult)
     {
         //Act

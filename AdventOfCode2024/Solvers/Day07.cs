@@ -21,7 +21,7 @@ public class Day07 : Solver
                 possibleEquationsSum += equationResult;
         }
 
-        PrintResult(07, 01, possibleEquationsSum);
+        PrintResult(07, 02, possibleEquationsSum);
     }
 
     public static void ParseInputLine(string inputLine, out long equationResult, out long[] numbers)
@@ -59,6 +59,7 @@ public class Day07 : Solver
 
         permutations.Add(['+']);
         permutations.Add(['*']);
+        permutations.Add(['|']);
 
         int operatorCount = 1;
 
@@ -68,13 +69,17 @@ public class Day07 : Solver
         {
             foreach (var permutation in permutations)
             {
-                char[] permutationCopy = new char[permutation.Count + 1];
-                permutation.CopyTo(permutationCopy);
+                char[] permutationMultiplyCopy = new char[permutation.Count + 1];
+                char[] permutationConcatCopy = new char[permutation.Count + 1];
+                permutation.CopyTo(permutationMultiplyCopy);
+                permutation.CopyTo(permutationConcatCopy);
 
                 permutation.Add('+');
-                permutationCopy[^1] = '*';
+                permutationMultiplyCopy[^1] = '*';
+                permutationConcatCopy[^1] = '|';
 
-                newPermutations.AddRange(permutationCopy.ToList());
+                newPermutations.AddRange(permutationMultiplyCopy.ToList());
+                newPermutations.AddRange(permutationConcatCopy.ToList());
             }
 
             permutations.AddRange(newPermutations);
@@ -106,6 +111,7 @@ public class Day07 : Solver
         {
             '+' => numbers[0] + numbers[1],
             '*' => numbers[0] * numbers[1],
+            '|' => long.Parse(numbers[0].ToString() + numbers[1].ToString()),
             _ => throw new ArgumentException($"Provided unhandled operator: {operatorCharacter}", nameof(operatorCharacter))
         };
     }
