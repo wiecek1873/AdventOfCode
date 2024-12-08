@@ -25,7 +25,7 @@ public class Day05 : Solver
 
     public async override Task SolveAsync()
     {
-        var inputStream = GetInputStream("05");
+        using var inputStream = GetInputStream("05");
 
         var printingRules = new Dictionary<int, PrintingRule>();
 

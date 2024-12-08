@@ -9,7 +9,7 @@ public class Day06 : Solver
 
     public override async Task SolveAsync()
     {
-        var input = GetInputStream("06");
+        using var input = GetInputStream("06");
         var inputList = new List<char[]>();
 
         while (!input.EndOfStream)

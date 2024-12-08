@@ -18,7 +18,10 @@ await day5.SolveAsync();
 var day6 = new Day06();
 await day6.SolveAsync();
 
-var day07 = new Day07();
-await day07.SolveAsync();
+//var day07 = new Day07();
+//await day07.SolveAsync();
+
+var day08 = new Day08();
+await day08.SolveAsync();
 
 //var summary = BenchmarkRunner.Run<Day01>();

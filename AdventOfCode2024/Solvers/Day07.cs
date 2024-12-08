@@ -5,7 +5,7 @@ public class Day07 : Solver
 {
     public async override Task SolveAsync()
     {
-        var inputStream = GetInputStream("07");
+        using var inputStream = GetInputStream("07");
 
         long possibleEquationsSum = 0;
         while (!inputStream.EndOfStream)
